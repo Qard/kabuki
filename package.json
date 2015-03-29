@@ -1,0 +1,28 @@
+{
+  "name": "kabuki",
+  "version": "1.0.0",
+  "description": "Promise-based, actor-like, streaming RPC",
+  "author": "Stephen Belanger <admin@stephenbelanger.com>",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "dependencies": {
+    "bluebird": "~2.9.16",
+    "sliced": "0.0.5",
+    "uuid": "~2.0.1"
+  },
+  "devDependencies": {
+    "babel": "~4.7.16",
+    "duplexer": "~0.1.1",
+    "gulp": "~3.8.11",
+    "gulp-babel": "~4.0.0",
+    "gulp-matcha": "~1.0.3",
+    "gulp-mocha": "~2.0.0",
+    "msgpack": "~0.2.6",
+    "run-sequence": "~1.0.2",
+    "should": "~5.2.0",
+    "through2": "~0.6.3"
+  }
+}
