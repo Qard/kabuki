@@ -24,5 +24,25 @@
     "run-sequence": "~1.0.2",
     "should": "~5.2.0",
     "through2": "~0.6.3"
-  }
+  },
+  "directories": {
+    "example": "examples",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Qard/kabuki.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Qard/kabuki/issues"
+  },
+  "homepage": "https://github.com/Qard/kabuki",
+  "keywords": [
+    "rpc",
+    "actors",
+    "streams",
+    "streaming",
+    "promise",
+    "remote"
+  ]
 }
