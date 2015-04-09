@@ -1,6 +1,6 @@
 {
   "name": "kabuki",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Promise-based, actor-like, streaming RPC",
   "author": "Stephen Belanger <admin@stephenbelanger.com>",
   "main": "dist/index.js",
