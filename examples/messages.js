@@ -1,5 +1,6 @@
 import { createServer, createClient } from '../'
 import Promise from 'bluebird'
+import assert from 'assert'
 import uuid from 'uuid'
 
 //
@@ -102,10 +103,10 @@ let server = createServer((session) => {
   //
   function user () {
     return Promise.all([
-      session.register('createPost', (msg) => {
+      session.register('createPost', (content) => {
         return Post.create({
           user_id: state.user._id,
-          content: msg.content
+          content: content
         })
       }),
       session.register('readMyPosts', () => {
@@ -146,16 +147,13 @@ client.pipe(conn).pipe(client)
 // Use the interface
 client
   .then(() => client.createAccount('username', 'password'))
-  // .then(() => client.createPost('Hello!'))
-  // .then(() => client.readMyPosts())
-  // .then((posts) => {
-  //   assert(posts[0].content === 'Hello!')
-  // })
-  // .then(() => client.logout())
+  .then(() => client.createPost('Hello!'))
+  .then(() => client.readMyPosts())
+  .then((posts) => {
+    assert(posts[0].content === 'Hello!')
+  })
+  .then(() => client.logout())
   .then(
     () => console.log('success'),
-    () => console.log('boo')
+    (e) => console.error('boo...', e)
   )
-  .catch((e) => {
-    console.error('boo...', e.stack)
-  })
