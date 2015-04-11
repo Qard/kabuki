@@ -26,6 +26,9 @@ gulp.task('test', ['build'], function () {
     reporter: 'spec',
     timeout: 5000
   }))
+  .once('error', function (e) {
+    console.error(e.message)
+  })
 })
 
 gulp.task('bench', ['build'], function () {
