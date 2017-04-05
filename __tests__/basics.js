@@ -26,15 +26,15 @@ describe('basics', () => {
 
     var client = clientFor(server)
 
-    return client.then(() => client.test())
+    return client.then(() => client.remote.test())
   })
 
   it('should properly wait for startup handlers', () => {
-    var server = createServer(session => {
+    var server = createServer((session, remote) => {
       return session.register('ping', n => {
         return session
           .then(() => delayAnd(n))
-          .then(() => session.pong(n * 2))
+          .then(() => remote.pong(n * 2))
       })
     })
 
@@ -42,7 +42,7 @@ describe('basics', () => {
       return session.register('pong', delayAnd)
     })
 
-    return client.then(() => client.ping(50))
+    return client.then(() => client.remote.ping(50))
   })
 
   it('should support immediate functions', () => {
@@ -53,7 +53,7 @@ describe('basics', () => {
     var client = clientFor(server)
 
     return client
-      .then(() => client.hello('world'))
+      .then(() => client.remote.hello('world'))
       .then(v => expect(v).to.equal('Hello, world!'))
   })
 
@@ -73,8 +73,8 @@ describe('basics', () => {
     var client = clientFor(server)
 
     return client
-      .then(() => client.login('hello'))
-      .then(() => client.secret())
+      .then(() => client.remote.login('hello'))
+      .then(() => client.remote.secret())
       .then(v => expect(v).to.equal('You said "hello".'))
   })
 

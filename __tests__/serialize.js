@@ -29,7 +29,7 @@ describe('serialization', () => {
 
     // Wait for the interface to be ready and then ping
     return rpcClient
-      .then(() => rpcClient.hello('world'))
+      .then(() => rpcClient.remote.hello('world'))
       .then(v => expect(v).to.equal('Hello, world!'))
   })
 
@@ -72,7 +72,7 @@ describe('serialization', () => {
 
       // Wait for the interface to be ready and then ping
       return rpcClient
-        .then(() => rpcClient.hello('world'))
+        .then(() => rpcClient.remote.hello('world'))
         .then(v => expect(v).to.equal('Hello, world!'))
         .then(() => res.abort())
     }).then(() => {
@@ -112,7 +112,7 @@ describe('serialization', () => {
 
       // Wait for the interface to be ready and then ping
       return rpcClient
-        .then(() => rpcClient.hello('world'))
+        .then(() => rpcClient.remote.hello('world'))
         .then(v => expect(v).to.equal('Hello, world!'))
         .then(() => s.end())
     }).then(() => {

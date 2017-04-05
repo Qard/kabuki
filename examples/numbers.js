@@ -2,7 +2,7 @@ const { createServer, createClient } = require('../')
 const Promise = require('bluebird')
 const assert = require('assert')
 
-var server = createServer(session => {
+var server = createServer((session, remote) => {
   var values = []
 
   //
@@ -10,11 +10,11 @@ var server = createServer(session => {
   //
   return session.register('insert', n => {
     values.push(n)
-    return session.sum(values).then(sum => ({ values, sum }))
+    return remote.sum(values).then(sum => ({ values, sum }))
   })
 })
 
-var client = createClient(session => {
+var client = createClient((session, remote) => {
   //
   // The client registers a function to sum the values of a list
   //
@@ -31,7 +31,7 @@ client
   // When `push` is called, it will add the item to the server-side list
   // and then it will call back to our `sum` function to  produce a sum
   //
-  .then(() => client.insert(2))
+  .then(() => client.remote.insert(2))
   .then(result => {
     assert(result.values.length === 1)
     assert(result.sum === 2)
@@ -39,7 +39,7 @@ client
   //
   // On subsequent calls, the list state will persist and thus grow
   //
-  .then(() => client.insert(4))
+  .then(() => client.remote.insert(4))
   .then(result => {
     assert(result.values.length === 2)
     assert(result.sum === 6)

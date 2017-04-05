@@ -60,13 +60,13 @@ class Post {
 
     return Promise.resolve(found)
   }
-  
+
 }
 
 //
 // RPC interface
 //
-var server = createServer(session => {
+var server = createServer((session, remote) => {
   var state = {}
 
   //
@@ -151,13 +151,13 @@ client.pipe(conn).pipe(client)
 
 // Use the interface
 client
-  .then(() => client.createAccount('username', 'password'))
-  .then(() => client.createPost('Hello!'))
-  .then(() => client.readMyPosts())
+  .then(() => client.remote.createAccount('username', 'password'))
+  .then(() => client.remote.createPost('Hello!'))
+  .then(() => client.remote.readMyPosts())
   .then(posts => {
     assert(posts[0].content === 'Hello!')
   })
-  .then(() => client.logout())
+  .then(() => client.remote.logout())
   .then(
     () => console.log('success'),
     e => console.error('boo...', e)
