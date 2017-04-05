@@ -3,10 +3,12 @@
   "version": "1.1.1",
   "description": "Promise-based, actor-like, streaming RPC",
   "author": "Stephen Belanger <admin@stephenbelanger.com>",
-  "main": "dist/index.js",
+  "main": "lib/index.js",
   "license": "MIT",
   "scripts": {
-    "test": "gulp test"
+    "bench": "matcha",
+    "coverage": "jest --coverage",
+    "test": "jest"
   },
   "dependencies": {
     "bluebird": "~2.9.16",
@@ -15,15 +17,11 @@
   },
   "devDependencies": {
     "babel": "~4.7.16",
-    "duplexer": "~0.1.1",
-    "gulp": "~3.8.11",
-    "gulp-babel": "~4.0.0",
-    "gulp-matcha": "~1.0.3",
-    "gulp-mocha": "~2.0.0",
-    "msgpack": "~0.2.6",
-    "run-sequence": "~1.0.2",
-    "should": "~5.2.0",
-    "through2": "~0.6.3"
+    "brake": "^1.0.1",
+    "chai": "^3.5.0",
+    "jest": "^19.0.2",
+    "matcha": "^0.7.0",
+    "msgpack5": "^3.4.1"
   },
   "directories": {
     "example": "examples",
@@ -44,5 +42,11 @@
     "streaming",
     "promise",
     "remote"
-  ]
+  ],
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/__tests__/helper.js"
+    ]
+  }
 }

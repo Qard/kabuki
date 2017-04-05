@@ -1,31 +1,29 @@
-import { createServer, createClient } from '../'
-import Promise from 'bluebird'
-import assert from 'assert'
+const { createServer, createClient } = require('../')
+const Promise = require('bluebird')
+const assert = require('assert')
 
-let server = createServer((session) => {
-  let values = []
+var server = createServer(session => {
+  var values = []
 
   //
   // The server registers a function to push to a list of numbers
   //
-  return session.register('insert', (n) => {
+  return session.register('insert', n => {
     values.push(n)
-    return session.sum(values).then((sum) => {
-      return { values, sum }
-    })
+    return session.sum(values).then(sum => ({ values, sum }))
   })
 })
 
-let client = createClient((session) => {
+var client = createClient(session => {
   //
   // The client registers a function to sum the values of a list
   //
-  return session.register('sum', (values) => {
+  return session.register('sum', values => {
     return values.reduce((m, v) => m + v, 0)
   })
 })
 
-let conn = server.createConnection()
+var conn = server.createConnection()
 client.pipe(conn).pipe(client)
 
 client
@@ -34,7 +32,7 @@ client
   // and then it will call back to our `sum` function to  produce a sum
   //
   .then(() => client.insert(2))
-  .then((result) => {
+  .then(result => {
     assert(result.values.length === 1)
     assert(result.sum === 2)
   })
@@ -42,7 +40,7 @@ client
   // On subsequent calls, the list state will persist and thus grow
   //
   .then(() => client.insert(4))
-  .then((result) => {
+  .then(result => {
     assert(result.values.length === 2)
     assert(result.sum === 6)
   })

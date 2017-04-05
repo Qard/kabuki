@@ -4,6 +4,8 @@ Kabuki is an RPC interface that layers promise-based, actor-like constructs over
 
 ## Install
 
+Kabuki 2.x+ requires Node.js 6.x+.
+
 ```sh
 npm install kabuki
 ```
@@ -11,23 +13,21 @@ npm install kabuki
 ## Example
 
 ```js
-import { createServer, createClient } from 'kabuki'
-import assert from 'assert'
+const { createServer, createClient } = require('kabuki')
+const assert = require('assert')
 
 // Server has a function to add numbers to an array
-let server = createServer((session) => {
+let server = createServer(session => {
   let values = []
-  return session.register('add', (n) => {
+  return session.register('add', n => {
     values.push(n)
-    return session.sum(values).then((sum) => {
-      return { values, sum }
-    })
+    return session.sum(values).then(sum => ({ values, sum }))
   })
 })
 
 // Client has a function to sum values of a list
-let client = createClient((session) => {
-  return session.register('sum', (values) => {
+let client = createClient(session => {
+  return session.register('sum', values => {
     return values.reduce((m, v) => m + v, 0)
   })
 })
@@ -40,25 +40,22 @@ client
   // When `add` is called, it will add the item to the server-side list
   // and then it will call back to our `sum` function to produce a sum
   .then(() => client.add(2))
-  .then((result) => {
+  .then(result => {
     assert(result.values.length === 1)
     assert(result.sum === 2)
   })
   // On subsequent calls, the list state will persist and thus grow
   .then(() => client.add(4))
-  .then((result) => {
+  .then(result => {
     assert(result.values.length === 2)
     assert(result.sum === 6)
-  })
-  .then(() => {
     console.log('success')
   })
-
 ```
 
 ---
 
-### Copyright (c) 2015 Stephen Belanger
+### Copyright (c) 2017 Stephen Belanger
 #### Licensed under MIT License
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:

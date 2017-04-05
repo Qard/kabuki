@@ -1,19 +1,19 @@
-import Promise from 'bluebird'
-import http from 'http'
-import net from 'net'
+const Promise = require('bluebird')
+const http = require('http')
+const net = require('net')
 
-import { createServer, createClient } from '..'
-import { encode, decode } from '../test/helper'
+const { createServer, createClient } = require('..')
+const { encode, decode } = require('../test_helpers/helper')
 
 suite('direct', () => {
-  let rpcServer
-  let rpcClient
+  var rpcServer
+  var rpcClient
 
   before(() => {
     rpcServer = createServer(handleSession)
     rpcClient = createClient()
 
-    let conn = rpcServer.createConnection()
+    var conn = rpcServer.createConnection()
     rpcClient.pipe(conn).pipe(rpcClient)
   })
 
@@ -23,30 +23,30 @@ suite('direct', () => {
 })
 
 suite('http', () => {
-  let httpServer
-  let httpClient
-  let rpcServer
-  let rpcClient
+  var httpServer
+  var httpClient
+  var rpcServer
+  var rpcClient
 
-  before((done) => {
+  before(done => {
     rpcServer = createServer(handleSession)
     rpcClient = createClient()
 
     httpServer = http.createServer((req, res) => {
-      let conn = rpcServer.createConnection()
-      let e = encode()
-      let d = decode()
+      var conn = rpcServer.createConnection()
+      var e = encode()
+      var d = decode()
       req.pipe(d).pipe(conn).pipe(e).pipe(res)
     })
 
     httpServer.listen(() => {
-      let port = httpServer.address().port
+      var port = httpServer.address().port
 
       httpClient = http.request({
         method: 'POST',
         host: 'localhost',
         port: port
-      }, (req) => {
+      }, req => {
         req.pipe(decode()).pipe(rpcClient)
         done()
       })
@@ -55,12 +55,12 @@ suite('http', () => {
     })
   })
 
-  after((done) => {
+  after(done => {
     httpClient.on('close', done)
     httpClient.abort()
   })
 
-  after((done) => {
+  after(done => {
     httpServer.close(done)
   })
 
@@ -70,27 +70,27 @@ suite('http', () => {
 })
 
 suite('net', () => {
-  let netServer
-  let netClient
-  let rpcServer
-  let rpcClient
+  var netServer
+  var netClient
+  var rpcServer
+  var rpcClient
 
   before((done) => {
     rpcServer = createServer(handleSession)
     rpcClient = createClient()
 
-    let serialize = (a, b) => {
-      let d = decode()
-      let e = encode()
+    var serialize = (a, b) => {
+      var d = decode()
+      var e = encode()
       a.pipe(d).pipe(b).pipe(e).pipe(a)
     }
 
-    netServer = net.createServer((socket) => {
+    netServer = net.createServer(socket => {
       serialize(socket, rpcServer.createConnection())
     })
 
     netServer.listen(() => {
-      let port = netServer.address().port
+      var port = netServer.address().port
       netClient = net.connect(port, () => {
         serialize(netClient, rpcClient)
         done()
@@ -98,12 +98,12 @@ suite('net', () => {
     })
   })
 
-  after((done) => {
+  after(done => {
     netClient.on('close', done)
     netClient.end()
   })
 
-  after((done) => {
+  after(done => {
     netServer.close(done)
   })
 
@@ -116,11 +116,11 @@ suite('net', () => {
 // Helpers
 //
 function handleSession (session) {
-  return session.register('echo', (v) => v)
+  return session.register('echo', v => v)
 }
 
 function promiseBack (fn) {
-  return (done) => {
+  return done => {
     fn().then(() => done(), done)
   }
 }

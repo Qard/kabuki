@@ -1,75 +1,80 @@
-import { createServer, createClient } from '../'
-import Promise from 'bluebird'
-import assert from 'assert'
-import uuid from 'uuid'
+const { createServer, createClient } = require('../')
+const Promise = require('bluebird')
+const assert = require('assert')
+const uuid = require('uuid')
 
 //
 // User model
 //
-function User (data) {
-  this.id = uuid.v4()
-  this.name = data.name
-  this.pass = data.pass
-}
+var users = []
+class User {
 
-User.users = []
-
-User.create = function (name, pass) {
-  var user = new User({ name, pass })
-  User.users.push(user)
-  return Promise.resolve(user)
-}
-
-User.login = function (name, pass) {
-  var user = User.users.filter((u) => {
-    return u.name == name && u.pass == pass
-  })
-
-  if ( ! user.length) {
-    return Promise.reject('Authentication failed')
+  constructor(data) {
+    this.id = uuid.v4()
+    this.name = data.name
+    this.pass = data.pass
   }
 
-  return Promise.resolve(user[0])
+  static create(name, pass) {
+    var user = new User({ name, pass })
+    users.push(user)
+    return Promise.resolve(user)
+  }
+
+  static login(name, pass) {
+    var user = users.filter((u) => {
+      return u.name == name && u.pass == pass
+    })
+
+    if ( ! user.length) {
+      return Promise.reject('Authentication failed')
+    }
+
+    return Promise.resolve(user[0])
+  }
+
 }
 
 //
 // Post model
 //
-function Post (data) {
-  this.id = uuid.v4()
-  this.content = data.content
-}
+var posts = []
+class Post {
 
-Post.posts = []
+  constructor(data) {
+    this.id = uuid.v4()
+    this.content = data.content
+  }
 
-Post.create = function (data) {
-  var post = new Post(data)
-  Post.posts.push(post)
-  return Promise.resolve(post)
-}
+  static create(data) {
+    var post = new Post(data)
+    posts.push(post)
+    return Promise.resolve(post)
+  }
 
-Post.find = function (data) {
-  var posts = Post.posts.filter((post) => {
-    return Object.keys(data).reduce((m, key) => {
-      return m && post[key] == data[key]
-    }, true)
-  })
+  static find(data) {
+    var found = posts.filter(post => {
+      return Object.keys(data)
+        .reduce((m, key) => m && post[key] == data[key], true)
+    })
 
-  return Promise.resolve(posts)
+    return Promise.resolve(found)
+  }
+  
 }
 
 //
 // RPC interface
 //
-let server = createServer((session) => {
-  let state = {}
+var server = createServer(session => {
+  var state = {}
 
   //
   // The guest interface lets only lets you create an account or login
   //
-  function guest () {
+  function guest() {
     // After either path, store user record and enter user interface
-    function loggedIn (user) {
+    function loggedIn(user) {
       state.user = user
       return enter().then(() => user)
     }
@@ -139,9 +144,9 @@ let server = createServer((session) => {
   return guest()
 })
 
-let client = createClient()
+var client = createClient()
 
-let conn = server.createConnection()
+var conn = server.createConnection()
 client.pipe(conn).pipe(client)
 
 // Use the interface
@@ -149,11 +154,11 @@ client
   .then(() => client.createAccount('username', 'password'))
   .then(() => client.createPost('Hello!'))
   .then(() => client.readMyPosts())
-  .then((posts) => {
+  .then(posts => {
     assert(posts[0].content === 'Hello!')
   })
   .then(() => client.logout())
   .then(
     () => console.log('success'),
-    (e) => console.error('boo...', e)
+    e => console.error('boo...', e)
   )
