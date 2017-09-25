@@ -1,5 +1,7 @@
 # kabuki
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/Qard/kabuki.svg)](https://greenkeeper.io/)
+
 Kabuki is an RPC interface that layers promise-based, actor-like constructs over a streaming protocol that can be piped anywhere.
 
 ## Install
