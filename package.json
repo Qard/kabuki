@@ -21,7 +21,7 @@
     "chai": "^4.1.2",
     "jest": "^22.0.0",
     "matcha": "^0.7.0",
-    "msgpack5": "^4.0.0"
+    "msgpack5": "4.2.0"
   },
   "directories": {
     "example": "examples",
